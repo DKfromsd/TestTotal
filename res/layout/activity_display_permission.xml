@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/permissions"
+            android:textStyle="bold"/>
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:id="@+id/permissions"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="@string/requestedPermissions"
+            android:textStyle="bold"/>
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:id="@+id/requestedPermissions"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"/>
+
+        <Button android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/ok"
+            android:onClick="dismissPermissionsList"/>
+
+
+    </LinearLayout> </ScrollView>

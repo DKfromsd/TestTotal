@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Test Total</string>
+
+<string name="action_settings">Settings</string>
+<string name="Exit">Exit App</string>
+
+<string name="Total"> Total Test </string>
+<string name="FINE"> FINE ON? </string>
+
+    <string name="StartTestItem">Start Check</string>
+
+<string name="activity_battery_status">BatteryStatus</string>
+<string name="activity_display_check">DisplayCheck</string>
+<string name="activity_telephony_check">TelephonyCheck</string>
+<string name="activity_display_permission">Packages Clickable</string>
+<string name="Permissionlist">Permissions List</string>
+<string name="activity_location">Location Provider</string>
+<string name="activity_process">Running App Processes</string>
+<string name="activity_testAd">Test Ad Banner</string>
+<string name="activity_userInfo">Account Info</string>
+
+<string name="PkgName">Package Name</string>
+<string name="getPermissions">Get Permissions</string>
+<string name="permissions">permissions</string>
+<string name="requestedPermissions">Requested Permissions</string>
+<string name="allpkg">All Installed Packages</string>
+<string name="ok">Dismiss</string>
+
+<string name="address">Address:</string>
+<string name="menu_settings">Settings</string>
+<string name="enable_gps">Enable GPS</string>
+<string name="enable_gps_dialog">GPS provider off, would you like to enable it?</string>
+<string name="latlng">LatLong:</string>
+<string name="unknown">Unknown</string>
+<string name="not_support_gps">GPS provider not supported</string>
+<string name="not_support_network">Network Provider Not Supported</string>
+<string name="use_fine_provider">FineButton  </string>
+<string name="use_both_providers">  BothButton</string>
+
+</resources>
