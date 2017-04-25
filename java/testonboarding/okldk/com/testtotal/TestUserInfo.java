@@ -70,6 +70,18 @@ public class TestUserInfo extends Activity {// implements LoaderManager.LoaderCa
 
 
             AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+            //    return TODO;
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCOUNT_MANAGER}, 0);
+            }
             Account[] accounts = manager.getAccountsByType("com.google");
             StringBuilder sb = new StringBuilder();
             sb.append("Active Gmail Acccounts:").append("\n");

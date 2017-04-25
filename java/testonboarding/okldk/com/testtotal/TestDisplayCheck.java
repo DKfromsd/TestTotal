@@ -1,6 +1,7 @@
 package testonboarding.okldk.com.testtotal;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.Process;
@@ -79,7 +80,10 @@ public class TestDisplayCheck extends Activity {
         sb.append("xdpi= ").append(xdpi).append("\n");
         sb.append("ydpi= ").append(ydpi).append("\n\n");
         sb.append("getTextSize= ").append(tv1.getTextSize()).append("\n");
-        sb.append("openGL ES version (dec to hex) =").append(getgles()).append("\n").append("\n");
+        sb.append("openGL ES version (dec to hex) =").append(getgles()).append("\n");
+        sb.append("get Version SDK =").append(getVersionSDK()).append("\n");
+        sb.append("get Version SDK INT=").append(getVersionSDK_INT()).append("\n");
+        sb.append("get API Version=").append(getAPIVersion()).append("\n\n");
 
         sb.append("Is current user owner?").append(isCurrentUserOwner()).append("\n");
 
@@ -97,6 +101,46 @@ public class TestDisplayCheck extends Activity {
         getMenuInflater().inflate(R.menu.activity_display_check, menu);
         return true;
     }*/
+    public String getVersionSDK() {
+        String SDK = "";
+        int i;
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.build.version.sdk");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            SDK = bis.readLine();
+            return SDK;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String getVersionSDK_INT() {
+        String SDK = "";
+        int i;
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.build.version.sdk_int");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            SDK = bis.readLine();
+            return SDK;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String getAPIVersion() {
+        String V="";
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("RELEASE:").append(android.os.Build.VERSION.RELEASE).append("\n");
+            sb.append("SDK    :").append(android.os.Build.VERSION.SDK).append("\n");
+            sb.append("SDK INT:").append(Build.VERSION.SDK_INT).append("\n");
+            V=sb.toString();
+            return V;
+        } catch (NumberFormatException e) {
+            Log.e("myApp", "error retriving api version" + e.getMessage());
+        return null;
+        }
+    }
 
     public String getgles() {
         String gles = "";         // String hex = Integer.toHexString(i);

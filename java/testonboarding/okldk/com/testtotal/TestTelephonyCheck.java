@@ -52,7 +52,8 @@ import android.content.Context;
 import android.widget.CompoundButton;
 
 public class TestTelephonyCheck extends Activity {
-    public static String TAG="TelephonyCheck";
+    public static String TAG="TelephonyCheck",key="";
+    String swversion = getSWVersion("ro.lge.swversion");
     TextView tv1,tv2; // test
     boolean status;
     private static final int REQUEST_READ_CALL_LOG = 0;
@@ -62,20 +63,39 @@ public class TestTelephonyCheck extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(testonboarding.okldk.com.testtotal.R.layout.activity_telephony_check);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_SMS}, 0);
-        } // 2016.03.31
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_SMS}, 0);
+            }
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CALL_LOG}, 0);
+            }
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
+            }
+            setContentView(testonboarding.okldk.com.testtotal.R.layout.activity_telephony_check);
         tv1 = (TextView) findViewById(testonboarding.okldk.com.testtotal.R.id.tv1); // test
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE) ;
         StringBuilder sb= new StringBuilder();
         sb.append("\n\n\n");
-        sb.append("device SW ver :").append(tm.getDeviceSoftwareVersion()).append("\n");
-        sb.append("fingerprint :").append(getFinger()).append("\n").append(getversion()).append("\n");
-        sb.append("baseband : ").append(getbaseband()).append(",").append(getrilboardname());
+            sb.append("Device SW ver :").append(tm.getDeviceSoftwareVersion()).append("\n");
+            sb.append(" LG SW ver:").append(lgeswversion()).append("\n");
+            sb.append(" getSW by sys prop :").append(swversion).append("\n");
+
+            sb.append("build.DISPLAY : ").append(Build.DISPLAY).append("\n");
+            sb.append("build finger : ").append(Build.FINGERPRINT).append("\n");
+            sb.append("Fingerprint by prop :").append(getFinger()).append("\n");
+            sb.append("gsm baseband: ").append(getversion()).append("\n");
+            sb.append("ro.boot.serial :").append(getSerial()).append("\n").append("\n");
+            sb.append("baseband : ").append(getbaseband()).append("\nril boradname:").append(getrilboardname());
         sb.append("/ chipname:").append(getchipname()).append("\n");
         sb.append("platform : ").append(getplatform()).append(",").append(getproductboard()).append("\n");
         sb.append("cpu abi :").append(getcpuabi()).append("\n");
@@ -109,7 +129,7 @@ public class TestTelephonyCheck extends Activity {
         sb.append("--------------connectivity----------------------").append("\n");
         sb.append("GetActiveNetworkInformation :").append(getActiveNetworkInformation()).append("\n");
         sb.append(MeteredorNot()).append("\n");
-        sb.append("get missed call count all: ").append("\n").append(missedCallCount()).append("\n");
+            sb.append("get missed call count all: ").append("\n").append(missedCallCount()).append("\n\n");
 
         tv1.setText(sb.toString());
 
@@ -127,20 +147,50 @@ public class TestTelephonyCheck extends Activity {
                 }
             }
         });
-
-		/*
-        Switch toggle = (Switch) findViewById(R.id.wifi_switch);
-        toggle.setOnClickListener(new OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                // you might keep a reference to the CheckBox to avoid this class cast
-                boolean checked =((CheckBox)v).isChecked();
-                if (checked)
-                	toggleWiFi(statusWiFi());
-            }
-
-        });
-        */
+        }
+        catch (Exception e) {
+            Log.i("Exception", "Exception:" + e);
+        }
+    }
+    //------------wifi ----------------------
+    public boolean statusWiFi(){
+        boolean status=false;
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            status= false;
+        } else if (wifiManager.isWifiEnabled()) {
+            status= true;
+        }
+        return status;
+    }
+    public void toggleWiFi(boolean status) {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (status == true && !wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        } else if (status == false && wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
+    }
+    public String lgeswversion() {
+        String lgesw = "";
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.lge.swversion");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            lgesw = bis.readLine();
+            return lgesw ;
+        } catch (java.io.IOException e) {
+            return null ;
+        }
+    }
+    private String getSWVersion(String key){
+        try {
+            Class clazz = Class.forName("android.os.SystemProperties");
+            Method method = clazz.getDeclaredMethod("get", String.class);
+            return (String) method.invoke(null, key);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception: " + e.getMessage());
+            return null;
+        }
     }
 
     public String getFinger() {
@@ -161,6 +211,18 @@ public class TestTelephonyCheck extends Activity {
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             versionbaseband = bis.readLine();
             return versionbaseband ;
+        } catch (java.io.IOException e) {
+            return null ;
+        }
+    }
+
+    public String getSerial() {
+        String baseband = "";
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.boot.serialno");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            baseband = bis.readLine();
+            return baseband ;
         } catch (java.io.IOException e) {
             return null ;
         }
@@ -259,6 +321,12 @@ public class TestTelephonyCheck extends Activity {
             Process ifc = Runtime.getRuntime().exec("getprop ril.IMEI");
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             strImei = bis.readLine();
+            if(strImei == "")
+            {
+             Process ifc2 = Runtime.getRuntime().exec("getprop gsm.baseband.imei");
+             BufferedReader bis2 = new BufferedReader(new InputStreamReader(ifc2.getInputStream()));
+             strImei = bis2.readLine();
+            }
             return strImei ;
         } catch (java.io.IOException e) {
             return null ;
@@ -334,7 +402,7 @@ public class TestTelephonyCheck extends Activity {
             sb.append(meid).append("\n");
             sb.append(imei).append("\n");
             sb.append(euimid).append("\n");
-            tv2.setText(sb.toString()); // minSDK=16
+         //   tv2.setText(sb.toString()); // minSDK=16
             SimRec=sb.toString();
             Log.d(TAG,"MEID:"+meid+",IMEI:"+imei+",EUIMID:"+euimid+"(com.verizon.phone)");
             return SimRec;
@@ -431,29 +499,6 @@ public class TestTelephonyCheck extends Activity {
             return null;
         }
     }
-//------------wifi ----------------------
-
-    public boolean statusWiFi(){
-        boolean status=false;
-        WifiManager wifiManager = (WifiManager) this
-                .getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-            status= false;
-        } else if (wifiManager.isWifiEnabled()) {
-            status= true;
-        }
-        return status;
-    }
-    public void toggleWiFi(boolean status) {
-        WifiManager wifiManager = (WifiManager) this
-                .getSystemService(Context.WIFI_SERVICE);
-        if (status == true && !wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        } else if (status == false && wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(false);
-        }
-    }
-
 //-------------- missed call count test --------------
 
     public String missedCallCount(){

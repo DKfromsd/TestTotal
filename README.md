@@ -8,3 +8,8 @@ Any question and further questions, please ask me by mickeyfromsd@gmail.com
 
 Contents:
 To get response value by system properites; telephony, device property, location test, permission chck, display and user account
+change log : 
+test Ads added. 
+Telephony added. 
+Permission check location changed.
+Badge count changed(TODO) 

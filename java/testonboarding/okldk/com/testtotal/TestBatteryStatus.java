@@ -16,17 +16,49 @@ import android.widget.TextView;
 public class TestBatteryStatus extends Activity {
 
     private static final String LOG_TAG = "BatteryCheck";
-    private TextView batteryInfo;
+    private TextView batteryInfo, BatteryInitial;
+    double capacity;
     // private ImageView imageBatteryState;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(testonboarding.okldk.com.testtotal.R.layout.activity_battery_information);
+        BatteryInitial = (TextView)findViewById(R.id.textViewBatteryInitial);
         batteryInfo=(TextView)findViewById(testonboarding.okldk.com.testtotal.R.id.textViewBatteryInfo);
         // imageBatteryState=(ImageView)findViewById(R.id.imageViewBatteryState);
 
+        StringBuilder sb= new StringBuilder ();
+        sb.append(BatteryInitialInfo());
+        BatteryInitial.setText(sb.toString());
         this.registerReceiver(this.batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    }
+    public String BatteryInitialInfo(){
+        String battinfo;
+        double capacity,chargingCount;
+        long currentAve,currentNow,energyCount;
+        try{
+            BatteryManager mBatteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+            capacity = (double) mBatteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            // this is not coming when action changed.
+            chargingCount = ((double) mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
+            currentAve = ((long)mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE))/1000;
+            currentNow = ((long)mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW))/1000;
+            energyCount = ((long)mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER));
+
+            StringBuilder sb= new StringBuilder();
+            sb.append("\n\n\n").append("Capaticy :").append(capacity).append("\n");
+            sb.append("ChargingCount :").append(chargingCount).append("nAh\n");
+            sb.append("Current Ave   :").append(currentAve).append("mA\n");
+            sb.append("Current Now   :").append(currentNow).append("mA\n");
+            sb.append("Energy Count  :").append(energyCount).append("nWh\n");
+            battinfo=sb.toString();
+            return battinfo;
+        }
+        catch (Exception e){
+            Log.d(LOG_TAG,"Initial info" +e);
+            return null;
+        }
     }
 
     private BroadcastReceiver batteryInfoReceiver = new BroadcastReceiver() {
@@ -42,27 +74,19 @@ public class TestBatteryStatus extends Activity {
             //int  scale= intent.getIntExtra(BatteryManager.EXTRA_SCALE,0);
             int  status= intent.getIntExtra(BatteryManager.EXTRA_STATUS,0);
             String  technology= intent.getExtras().getString(BatteryManager.EXTRA_TECHNOLOGY);
-            int  temperature= intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0);
-            int  voltage= intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE,0);
+            float  temperature= ((float)intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0))/10;
+            float  voltage= intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE,0);
 
 
             batteryInfo.setText(
-                    "Health: "+health+"\n"+
-                            "   :2Good,4dead,7Cool,3overHeat,5oV,1unknown,6F"+"\n"+
-                            //       "Icon Small:"+icon_small+"\n"+
-                            "Level-Now: "+level+"\n"+
-                            "Level-Max: "+extra+"\n"+
-                            "Plugged: "+plugged+"\n"+
-                            ":1=AC,2=USB,4=Wireless"+"\n"+
-                            "Present: "+present+"\n"+
-                            ":true=batt, false=no-battpack"+"\n"+
-                            //       "Scale: "+scale+"\n"+
-                            "Status: "+status+"\n"+
-                            "   :2charge,3discharge,5full, 4 NOTcharge,1unkn "+"\n"+
-
-                            "Technology: "+technology+"\n"+
-                            "Temperature: "+temperature+"\n"+
-                            "Voltage: "+voltage+"\n");
+                            "Health: "+health+   "( 2GD,4dead,7Cool,3overHeat,5oV,1unkn,6F)"+"\n"+
+                            "Level-Now :  "+level+ "( Level-Max: "+extra+")\n"+
+                            "Plugged :  "+plugged+ "( 1=AC,2=USB,4=Wireless)"+"\n"+
+                            "Present :  "+present+ "( true=batt, false=no-battpack)"+"\n"+
+                            "Status  :  "+status+  "( 2charge,3disch,5full,4NOTcharge,1unkn)"+"\n"+
+                            "Technology :  "+technology+"\n"+
+                            "Temperature:  "+temperature+" "+(char)0x00B0+"C"+"\n"+
+                            "Voltage    :  "+((voltage)/1000)+"V\n");
             //  imageBatteryState.setImageResource(icon_small);
         }
     };

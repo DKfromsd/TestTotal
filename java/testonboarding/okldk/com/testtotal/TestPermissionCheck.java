@@ -1,6 +1,8 @@
 package testonboarding.okldk.com.testtotal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
@@ -35,8 +37,15 @@ public class TestPermissionCheck extends Activity implements OnClickListener{
         if (TEST_CONDITION)
         {
             //StringBuilder sb= new StringBuilder();
-            ArrayList<String> apps = new ArrayList<String>();
+            //ArrayList<String> apps = new ArrayList<String>();
             List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
+            Collections.sort(packs, new Comparator<PackageInfo>() {
+                @Override
+                public int compare(PackageInfo lhs, PackageInfo rhs) {
+                    return String.CASE_INSENSITIVE_ORDER.compare(lhs.packageName, rhs.packageName);
+                }
+            }); // TODO 2016 0608
+            System.out.println();
             System.out.println();
             for(int j = 0 ; j < packs.size(); j++){
 

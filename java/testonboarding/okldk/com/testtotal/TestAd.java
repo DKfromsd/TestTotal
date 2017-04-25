@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 /*
 // Ad network-specific imports (AdMob).
+import com.google.android.gms.ads.AdView;
 import com.google.ads.*;
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
-import com.google.ads.AdView;
+//import com.google.ads.AdView;
 import com.google.ads.AdRequest.ErrorCode;
-import com.okldk.testtotal.R;
+import testonboarding.okldk.com.testtotal.R;
 
 public class TestAd extends FragmentActivity {
     private static final int NUM_ITEMS = 4;
@@ -35,7 +36,7 @@ public class TestAd extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_pager);
+        setContentView(R.layout.activity_test_ad);
 
         mAdapter = new PagerAdapter(getSupportFragmentManager());
 
@@ -147,9 +148,9 @@ public class TestAd extends FragmentActivity {
         }
     }
 }
+
 */
 
-/*
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -158,24 +159,26 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.google.ads.*;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
 public class TestAd extends Activity {
-	private String PublisuerID = "a15209e5e90c4a0";
-
+    private String PublisuerID ="pub-9693957509187788"; //"7559D4F3FBD04F911CB02B5871575E87";
 	private AdView adView;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_testad);
+        setContentView(R.layout.activity_test_ad);
 
-        adView = new AdView(this, AdSize.BANNER, PublisuerID);
-        RelativeLayout layout = (RelativeLayout)findViewById(R.id.linearLayout);
-        layout.addView(adView);
-        adView.loadAd(new AdRequest());
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
     }
     public void dismissTestAd(View view) {
-        Log.d(TAG, "Finishing activity");
+       // Log.d(TAG, "Finishing activity");
         finish();
     }
 }
-*/

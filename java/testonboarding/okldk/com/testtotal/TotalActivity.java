@@ -26,13 +26,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+// ad test
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+//
 public class TotalActivity extends Activity implements OnClickListener {
     public static String TAG = "Main Check ";
     private TextView selection;
     private ContentObserver MyContentObserver = null; // badge test missed call
     private static final String[] testItems = {"TestBatteryStatus", "TestDisplayCheck",
             "TestTelephonyCheck", "TestPermissionCheck", "TestLocationCheck", "TestRunningAppProcess",
-            "TestUserInfo" //,"TestAd"
+            "TestUserInfo" ,"TestAd"
     }; // testAd
     List<String> testList = Arrays.asList(testItems);
 
@@ -58,6 +63,12 @@ public class TotalActivity extends Activity implements OnClickListener {
             lll.addView(tv);
         }
         setContentView(v);
+// Ad test
+//        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
+//        AdView mAdView = (AdView) findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
+/*---------------- TODO 1 permission popup issue ------------------
         //background
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -67,6 +78,7 @@ public class TotalActivity extends Activity implements OnClickListener {
         // badge test 2-modify by service
         // clear missed call by is read
         startService(new Intent(TotalActivity.this, TestBadgeUtil.class));
+*/
     }
 
     //@Override
@@ -133,7 +145,7 @@ public class TotalActivity extends Activity implements OnClickListener {
             intent.putExtra("ClassName", p);
             startActivity(intent);
         } else if (p == "TestAd") {
-            Intent intent = new Intent(this, TestRunningAppProcess.class);
+            Intent intent = new Intent(this, TestAd.class);
             intent.putExtra("ClassName", p);
             startActivity(intent);
         } else if (p == "TestUserInfo") {
@@ -166,7 +178,7 @@ public class TotalActivity extends Activity implements OnClickListener {
             super.onChange(selfChange);
         }
     }
-
+/* --------- TODO 2 check permission popup issue ---------------------------
     public void MissedCallIsRead() {
         Log.d(TAG, "MISSEDCALLISREAD -- enter -- ");
         ContentValues values = new ContentValues();
@@ -182,10 +194,8 @@ public class TotalActivity extends Activity implements OnClickListener {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.WRITE_CALL_LOG}, 0);
-                }
                 return;
             }
             getContentResolver().update(CallLog.Calls.CONTENT_URI, values, where3.toString(),
@@ -209,7 +219,7 @@ public class TotalActivity extends Activity implements OnClickListener {
         super.onDestroy();
     }
     //--------------------------------------------------------
-
+*/
     @Override
     public void onBackPressed() {
         String message = "";
