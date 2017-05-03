@@ -14,8 +14,9 @@ import android.widget.TextView;
 /*
 // Ad network-specific imports (AdMob).
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.*;
 import com.google.ads.*;
-import com.google.ads.Ad;
+//import com.google.ads.Ad;  obsoleter in google play service plugin
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 //import com.google.ads.AdView;

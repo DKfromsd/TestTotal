@@ -80,7 +80,7 @@ public class TestDisplayCheck extends Activity {
         sb.append("xdpi= ").append(xdpi).append("\n");
         sb.append("ydpi= ").append(ydpi).append("\n\n");
         sb.append("getTextSize= ").append(tv1.getTextSize()).append("\n");
-        sb.append("openGL ES version (dec to hex) =").append(getgles()).append("\n");
+        sb.append("openGL ES version (dec to hex) =").append(getgles()).append("\n").append("\n");
         sb.append("get Version SDK =").append(getVersionSDK()).append("\n");
         sb.append("get Version SDK INT=").append(getVersionSDK_INT()).append("\n");
         sb.append("get API Version=").append(getAPIVersion()).append("\n\n");
