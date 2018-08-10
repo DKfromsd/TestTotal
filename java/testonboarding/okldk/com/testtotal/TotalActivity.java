@@ -2,13 +2,16 @@ package testonboarding.okldk.com.testtotal;
 
 import java.util.Arrays;
 import java.util.List;
-
+import android.content.Context;
+import java.lang.annotation.Annotation;
+import android.support.annotation.RequiresApi;
 //import testonboarding.okldk.com.TestBadgeUtil;
 //import testonboarding.okldk.com.TotalActivity.MyContentObserver;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.app.Activity;
@@ -35,6 +38,16 @@ public class TotalActivity extends Activity implements OnClickListener {
     public static String TAG = "Main Check ";
     private TextView selection;
     private ContentObserver MyContentObserver = null; // badge test missed call
+
+//    private String[] permissions = {Manifest.permission.READ_CALL_LOG, Manifest.permission.ACCESS_COARSE_LOCATION};
+// The request code used in ActivityCompat.requestPermissions()
+// and returned in the Activity's onRequestPermissionsResult()
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.READ_CALL_LOG,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION
+
+    };
     private static final String[] testItems = {"TestBatteryStatus", "TestDisplayCheck",
             "TestTelephonyCheck", "TestPermissionCheck", "TestLocationCheck", "TestRunningAppProcess",
             "TestUserInfo" ,"TestAd"
@@ -62,6 +75,11 @@ public class TotalActivity extends Activity implements OnClickListener {
             Log.d(TAG, " after setonClickListener ");
             lll.addView(tv);
         }
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
         setContentView(v);
 // Ad test
 //        MobileAds.initialize(getApplicationContext(), "ca-app-pub-3940256099942544~3347511713");
@@ -249,4 +267,28 @@ public class TotalActivity extends Activity implements OnClickListener {
         return true;
 
     }
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /*
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestMultiplePermissions(){
+        List<String> remainingPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                remainingPermissions.add(permission);
+            }
+        }
+        ActivityCompat.requestPermissions(remainingPermissions.toArray(new String[remainingPermissions.size()]), 101);
+    }
+*/
+
 }
