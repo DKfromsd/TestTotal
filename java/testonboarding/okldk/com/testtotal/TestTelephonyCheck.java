@@ -52,8 +52,7 @@ import android.content.Context;
 import android.widget.CompoundButton;
 
 public class TestTelephonyCheck extends Activity {
-    public static String TAG="TelephonyCheck",key="";
-    String swversion = getSWVersion("ro.lge.swversion");
+    public static String TAG="TelephonyCheck";
     TextView tv1,tv2; // test
     boolean status;
     private static final int REQUEST_READ_CALL_LOG = 0;
@@ -63,32 +62,18 @@ public class TestTelephonyCheck extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_SMS}, 0);
-            }
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CALL_LOG}, 0);
-            }
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},0);
-            }
-            setContentView(testonboarding.okldk.com.testtotal.R.layout.activity_telephony_check);
+        setContentView(testonboarding.okldk.com.testtotal.R.layout.activity_telephony_check);
         tv1 = (TextView) findViewById(testonboarding.okldk.com.testtotal.R.id.tv1); // test
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE) ;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_SMS}, 0);
+        }
         StringBuilder sb= new StringBuilder();
         sb.append("\n\n\n");
             sb.append("Device SW ver :").append(tm.getDeviceSoftwareVersion()).append("\n");
             sb.append(" LG SW ver:").append(lgeswversion()).append("\n");
-            sb.append(" getSW by sys prop :").append(swversion).append("\n");
 
             sb.append("build.DISPLAY : ").append(Build.DISPLAY).append("\n");
             sb.append("build finger : ").append(Build.FINGERPRINT).append("\n");
@@ -102,8 +87,9 @@ public class TestTelephonyCheck extends Activity {
         sb.append("ram low :").append(getlowram()).append("\n");
         sb.append("--------------Security-----------------------").append("\n");
         sb.append(getSecurity()).append("\n");
-        sb.append("ro.secure   :").append(getRoSecure()).append("\n");
+        sb.append("ro.boot.verifiedbootstate   :").append(getBootloaderUnlockstatus()).append("\n");
         sb.append("ro.debuggable: ").append(getDebuggable()).append("\n");
+        sb.append("ro.boot.veritymode (SELinux): ").append(getVeritymode()).append("\n");
         sb.append("--------------telephony-----------------------").append("\n");
         sb.append("getNetworkCountryIso()  :").append(tm.getNetworkCountryIso()).append("\n");
         sb.append("getDeviceId(MEID)       :").append(tm.getDeviceId()).append("\n");
@@ -147,31 +133,8 @@ public class TestTelephonyCheck extends Activity {
                 }
             }
         });
-        }
-        catch (Exception e) {
-            Log.i("Exception", "Exception:" + e);
-        }
-    }
-    //------------wifi ----------------------
-    public boolean statusWiFi(){
-        boolean status=false;
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-            status= false;
-        } else if (wifiManager.isWifiEnabled()) {
-            status= true;
-        }
-        return status;
-    }
-    public void toggleWiFi(boolean status) {
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (status == true && !wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        } else if (status == false && wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(false);
-        }
-    }
-    public String lgeswversion() {
+     }
+     public String lgeswversion() {
         String lgesw = "";
         try {
             Process ifc = Runtime.getRuntime().exec("getprop ro.lge.swversion");
@@ -182,7 +145,7 @@ public class TestTelephonyCheck extends Activity {
             return null ;
         }
     }
-    private String getSWVersion(String key){
+/*    private String getSWVersion(String key){
         try {
             Class clazz = Class.forName("android.os.SystemProperties");
             Method method = clazz.getDeclaredMethod("get", String.class);
@@ -192,7 +155,7 @@ public class TestTelephonyCheck extends Activity {
             return null;
         }
     }
-
+*/
     public String getFinger() {
         String strfingerprint = "";
         try {
@@ -332,10 +295,10 @@ public class TestTelephonyCheck extends Activity {
             return null ;
         }
     }
-    public String getRoSecure() {
+    public String getBootloaderUnlockstatus() {
         String strSecure = "";
         try {
-            Process ifc = Runtime.getRuntime().exec("getprop ro.secure");
+            Process ifc = Runtime.getRuntime().exec("getprop ro.boot.verifiedbootstate");
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             strSecure = bis.readLine();
             return strSecure ;
@@ -343,11 +306,21 @@ public class TestTelephonyCheck extends Activity {
             return null ;
         }
     }
-
     public String getDebuggable() {
         String debuggable = "";
         try {
-            Process ifc = Runtime.getRuntime().exec("getprop getDebuggable");
+            Process ifc = Runtime.getRuntime().exec("getprop ro.debuggable");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            debuggable = bis.readLine();
+            return debuggable ;
+        } catch (java.io.IOException e) {
+            return null ;
+        }
+    }
+    public String getVeritymode() {
+        String debuggable = "";
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.boot.veritymode");
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             debuggable = bis.readLine();
             return debuggable ;
@@ -402,7 +375,7 @@ public class TestTelephonyCheck extends Activity {
             sb.append(meid).append("\n");
             sb.append(imei).append("\n");
             sb.append(euimid).append("\n");
-         //   tv2.setText(sb.toString()); // minSDK=16
+            tv2.setText(sb.toString()); // minSDK=16
             SimRec=sb.toString();
             Log.d(TAG,"MEID:"+meid+",IMEI:"+imei+",EUIMID:"+euimid+"(com.verizon.phone)");
             return SimRec;
@@ -499,6 +472,27 @@ public class TestTelephonyCheck extends Activity {
             return null;
         }
     }
+//------------wifi ----------------------
+
+    public boolean statusWiFi(){
+        boolean status=false;
+        WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            status= false;
+        } else if (wifiManager.isWifiEnabled()) {
+            status= true;
+        }
+        return status;
+    }
+    public void toggleWiFi(boolean status) {
+        WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (status == true && !wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        } else if (status == false && wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        }
+    }
+
 //-------------- missed call count test --------------
 
     public String missedCallCount(){
