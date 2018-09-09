@@ -89,6 +89,7 @@ public class TestTelephonyCheck extends Activity {
         sb.append(getSecurity()).append("\n");
         sb.append("ro.boot.verifiedbootstate   :").append(getBootloaderUnlockstatus()).append("\n");
         sb.append("ro.debuggable: ").append(getDebuggable()).append("\n");
+        sb.append("ro.boot.flash.locked: ").append(getBootloaderstatus()).append("\n");
         sb.append("ro.boot.veritymode (SELinux): ").append(getVeritymode()).append("\n");
         sb.append("--------------telephony-----------------------").append("\n");
         sb.append("getNetworkCountryIso()  :").append(tm.getNetworkCountryIso()).append("\n");
@@ -321,6 +322,17 @@ public class TestTelephonyCheck extends Activity {
         String debuggable = "";
         try {
             Process ifc = Runtime.getRuntime().exec("getprop ro.boot.veritymode");
+            BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
+            debuggable = bis.readLine();
+            return debuggable ;
+        } catch (java.io.IOException e) {
+            return null ;
+        }
+    }
+    public String getBootloaderstatus() {
+        String debuggable = "";
+        try {
+            Process ifc = Runtime.getRuntime().exec("getprop ro.boot.flash.locked");
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             debuggable = bis.readLine();
             return debuggable ;
