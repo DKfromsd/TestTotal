@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.Process;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -51,6 +53,11 @@ public class TestDisplayCheck extends Activity {
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+
+        glesversion = Double.parseDouble(configurationInfo.getGlEsVersion());
         density=metrics.density;
         densityDpi=metrics.densityDpi;
         heightPixels=metrics.heightPixels;
@@ -58,7 +65,6 @@ public class TestDisplayCheck extends Activity {
         widthPixels=metrics.widthPixels;
         xdpi=metrics.xdpi;
         ydpi=metrics.ydpi;
-//       view.setSystemUiVisibility(2);//View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         tv1 =(TextView) findViewById(testonboarding.okldk.com.testtotal.R.id.tv1);
 
@@ -80,7 +86,7 @@ public class TestDisplayCheck extends Activity {
         sb.append("xdpi= ").append(xdpi).append("\n");
         sb.append("ydpi= ").append(ydpi).append("\n\n");
         sb.append("getTextSize= ").append(tv1.getTextSize()).append("\n");
-        sb.append("openGL ES version (dec to hex) =").append(getgles()).append("\n").append("\n");
+        sb.append("openGL ES version (dec to hex) =").append(glesversion).append("\n").append("\n");
         sb.append("get Version SDK =").append(getVersionSDK()).append("\n");
         sb.append("get Version SDK INT=").append(getVersionSDK_INT()).append("\n");
         sb.append("get API Version=").append(getAPIVersion()).append("\n\n");
@@ -95,12 +101,13 @@ public class TestDisplayCheck extends Activity {
         sb.append("isAdminUser:").append(isAdminUser(getApplicationContext()));
 
         tv1.setText(sb.toString());
-    }/*
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_display_check, menu);
+        getMenuInflater().inflate(R.menu.activity_display, menu);
         return true;
-    }*/
+    }
     public String getVersionSDK() {
         String SDK = "";
         int i;
@@ -132,7 +139,6 @@ public class TestDisplayCheck extends Activity {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("RELEASE:").append(android.os.Build.VERSION.RELEASE).append("\n");
-            sb.append("SDK    :").append(android.os.Build.VERSION.SDK).append("\n");
             sb.append("SDK INT:").append(Build.VERSION.SDK_INT).append("\n");
             V=sb.toString();
             return V;
@@ -143,14 +149,16 @@ public class TestDisplayCheck extends Activity {
     }
 
     public String getgles() {
-        String gles = "";         // String hex = Integer.toHexString(i);
+        String gles = null;         // String hex = Integer.toHexString(i);
+//        String extensions = gl.glGetString(GL10.GL_EXTENSIONS);
         int i;
         try {
             Process ifc = Runtime.getRuntime().exec("getprop ro.opengles.version");
             BufferedReader bis = new BufferedReader(new InputStreamReader(ifc.getInputStream()));
             gles = bis.readLine();
-            i=Integer.parseInt(gles.toString());
-            gles=Integer.toHexString(i);
+         //   i=Integer.parseInt(gles.toString());
+         //   gles=Integer.toString(i);
+            //gles=Integer.toHexString(i);
             return gles ;
         } catch (java.io.IOException e) {
             return null ;
